@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
@@ -9,7 +9,7 @@ namespace LabelDesigner.Services
 {
     public class PrintService
     {
-        public void PrintDocument(LabelDocument doc, IWin32Window owner)
+        public void PrintDocument(LabelDocument doc, IWin32Window owner, FieldResolver resolver)
         {
             using var pd = new PrintDocument();
             pd.DefaultPageSettings.Margins = new Margins(0,0,0,0);
@@ -27,7 +27,7 @@ namespace LabelDesigner.Services
 
                 var resolver = new FieldResolver(); // default empty
                 foreach (var item in doc.Items)
-                    item.Draw(g, resolver);
+                    item.Draw(g, resolver); // ✅ 使用傳進來的 resolver
             };
 
             using var dlg = new PrintDialog { UseEXDialog = true, Document = pd };

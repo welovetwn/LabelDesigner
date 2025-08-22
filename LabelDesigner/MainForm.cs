@@ -14,6 +14,7 @@ namespace LabelDesigner
     {
         private readonly JsonStorage _storage = new JsonStorage();
         private readonly PrintService _printer = new PrintService();
+        private FieldResolver _resolver = new FieldResolver(); // ← 新增這行
 
         public MainForm()
         {
@@ -114,11 +115,28 @@ namespace LabelDesigner
         {
             try
             {
-                _printer.PrintDocument(canvas.Document, this);
+                // 🔑 確保使用最新的 Resolver
+                canvas.SetResolver(_resolver);
+                _printer.PrintDocument(canvas.Document, this, _resolver);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(this, "列印失敗: " + ex.Message);
+            }
+        }
+        
+        private void btnApiTest_Click(object sender, EventArgs e)
+        {
+            using var f = new LabelDesigner.UI.ApiTestForm();
+            f.ShowDialog();
+            // 🔑 不管 DialogResult，直接取 Resolver
+            if (f.Resolver != null)
+            {
+                _resolver = f.Resolver ?? new FieldResolver();
+                // ✅ 把 Resolver 傳進 Canvas
+                canvas.SetResolver(_resolver);
+                //string result = resolver.Resolve("Hello, {{Name}}! City = {{City}}");
+                //MessageBox.Show(result);
             }
         }
 

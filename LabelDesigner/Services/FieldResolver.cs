@@ -1,36 +1,43 @@
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace LabelDesigner.Services
 {
     public class FieldResolver
     {
-        private readonly Dictionary<string, string> _fields;
+        private Dictionary<string, string> _fields = new();
 
-        public FieldResolver(Dictionary<string, string>? fields = null)
+        public FieldResolver() { }
+
+        public FieldResolver(Dictionary<string, string> fields)
         {
-            _fields = fields ?? new();
+            _fields = new Dictionary<string, string>(fields);
         }
 
-        public void Set(string key, string value) => _fields[key] = value;
+        /// <summary>
+        /// 設定欄位字典
+        /// </summary>
+        public void SetFields(Dictionary<string, string> fields)
+        {
+            _fields.Clear();
+            foreach (var kv in fields)
+                _fields[kv.Key] = kv.Value;
+        }
 
+        /// <summary>
+        /// 解析字串中的 {{欄位名}} 標記
+        /// </summary>
         public string Resolve(string input)
         {
-            if (string.IsNullOrEmpty(input)) return input;
-            string s = input;
+            if (string.IsNullOrEmpty(input))
+                return string.Empty;
 
-            // {{DATE}} -> yyyy-MM-dd
-            s = s.Replace("{{DATE}}", DateTime.Now.ToString("yyyy-MM-dd"));
-
-            // {{FIELD:Name}}
-            s = Regex.Replace(s, @"\{\{FIELD:(.*?)\}\}", m =>
+            string output = input;
+            foreach (var kv in _fields)
             {
-                var key = m.Groups[1].Value;
-                return _fields.TryGetValue(key, out var val) ? val : m.Value;
-            });
-
-            return s;
+                output = output.Replace("{{" + kv.Key + "}}", kv.Value);
+            }
+            return output;
         }
     }
 }

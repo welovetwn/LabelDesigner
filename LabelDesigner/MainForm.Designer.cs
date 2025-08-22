@@ -24,6 +24,7 @@ namespace LabelDesigner
             splitContainer1 = new SplitContainer();
             canvas = new LabelDesigner.UI.DesignerCanvas();
             propertyGrid1 = new PropertyGrid();
+            btnApiTest = new ToolStripButton();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -34,10 +35,10 @@ namespace LabelDesigner
             // toolStrip1
             // 
             toolStrip1.ImageScalingSize = new Size(20, 20);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { btnAddText, btnAddImage, btnAddBarcode, toolStripSeparator1, btnOpen, btnSave, btnPrint });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { btnAddText, btnAddImage, btnAddBarcode, toolStripSeparator1, btnOpen, btnSave, btnPrint, btnApiTest });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(1050, 25);
+            toolStrip1.Size = new Size(1050, 27);
             toolStrip1.TabIndex = 0;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -45,7 +46,7 @@ namespace LabelDesigner
             // 
             btnAddText.DisplayStyle = ToolStripItemDisplayStyle.Text;
             btnAddText.Name = "btnAddText";
-            btnAddText.Size = new Size(59, 22);
+            btnAddText.Size = new Size(59, 24);
             btnAddText.Text = "新增文字";
             btnAddText.Click += btnAddText_Click;
             // 
@@ -53,7 +54,7 @@ namespace LabelDesigner
             // 
             btnAddImage.DisplayStyle = ToolStripItemDisplayStyle.Text;
             btnAddImage.Name = "btnAddImage";
-            btnAddImage.Size = new Size(59, 22);
+            btnAddImage.Size = new Size(59, 24);
             btnAddImage.Text = "新增圖片";
             btnAddImage.Click += btnAddImage_Click;
             // 
@@ -61,20 +62,20 @@ namespace LabelDesigner
             // 
             btnAddBarcode.DisplayStyle = ToolStripItemDisplayStyle.Text;
             btnAddBarcode.Name = "btnAddBarcode";
-            btnAddBarcode.Size = new Size(59, 22);
+            btnAddBarcode.Size = new Size(59, 24);
             btnAddBarcode.Text = "新增條碼";
             btnAddBarcode.Click += btnAddBarcode_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(6, 25);
+            toolStripSeparator1.Size = new Size(6, 27);
             // 
             // btnOpen
             // 
             btnOpen.DisplayStyle = ToolStripItemDisplayStyle.Text;
             btnOpen.Name = "btnOpen";
-            btnOpen.Size = new Size(35, 22);
+            btnOpen.Size = new Size(35, 24);
             btnOpen.Text = "開啟";
             btnOpen.Click += btnOpen_Click;
             // 
@@ -82,7 +83,7 @@ namespace LabelDesigner
             // 
             btnSave.DisplayStyle = ToolStripItemDisplayStyle.Text;
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(35, 22);
+            btnSave.Size = new Size(35, 24);
             btnSave.Text = "儲存";
             btnSave.Click += btnSave_Click;
             // 
@@ -90,14 +91,14 @@ namespace LabelDesigner
             // 
             btnPrint.DisplayStyle = ToolStripItemDisplayStyle.Text;
             btnPrint.Name = "btnPrint";
-            btnPrint.Size = new Size(35, 22);
+            btnPrint.Size = new Size(35, 24);
             btnPrint.Text = "列印";
             btnPrint.Click += btnPrint_Click;
             // 
             // splitContainer1
             // 
             splitContainer1.Dock = DockStyle.Fill;
-            splitContainer1.Location = new Point(0, 25);
+            splitContainer1.Location = new Point(0, 27);
             splitContainer1.Margin = new Padding(3, 2, 3, 2);
             splitContainer1.Name = "splitContainer1";
             // 
@@ -108,7 +109,7 @@ namespace LabelDesigner
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(propertyGrid1);
-            splitContainer1.Size = new Size(1050, 575);
+            splitContainer1.Size = new Size(1050, 573);
             splitContainer1.SplitterDistance = 787;
             splitContainer1.TabIndex = 1;
             // 
@@ -118,12 +119,13 @@ namespace LabelDesigner
             canvas.Dock = DockStyle.Fill;
             labelDocument1.Dpi = 300F;
             labelDocument1.PageHeightMm = 50F;
+            labelDocument1.PageSize = new SizeF(400F, 300F);
             labelDocument1.PageWidthMm = 100F;
             canvas.Document = labelDocument1;
             canvas.Location = new Point(0, 0);
             canvas.Margin = new Padding(3, 2, 3, 2);
             canvas.Name = "canvas";
-            canvas.Size = new Size(787, 575);
+            canvas.Size = new Size(787, 573);
             canvas.TabIndex = 0;
             canvas.SelectionChanged += canvas_SelectionChanged;
             // 
@@ -133,8 +135,16 @@ namespace LabelDesigner
             propertyGrid1.Location = new Point(0, 0);
             propertyGrid1.Margin = new Padding(3, 2, 3, 2);
             propertyGrid1.Name = "propertyGrid1";
-            propertyGrid1.Size = new Size(259, 575);
+            propertyGrid1.Size = new Size(259, 573);
             propertyGrid1.TabIndex = 0;
+            // 
+            // btnApiTest
+            // 
+            btnApiTest.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            btnApiTest.Name = "btnApiTest";
+            btnApiTest.Size = new Size(24, 24);
+            btnApiTest.Text = "資料";
+            btnApiTest.Click += btnApiTest_Click;
             // 
             // MainForm
             // 
@@ -163,6 +173,7 @@ namespace LabelDesigner
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton btnOpen;
         private System.Windows.Forms.ToolStripButton btnSave;
+        private System.Windows.Forms.ToolStripButton btnApiTest;
         private System.Windows.Forms.ToolStripButton btnPrint;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private UI.DesignerCanvas canvas;

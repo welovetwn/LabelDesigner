@@ -1,0 +1,174 @@
+{
+  "Dpi": 300,
+  "PageWidthMm": 100,
+  "PageHeightMm": 50,
+  "PageSize": {
+    "IsEmpty": false,
+    "Width": 400,
+    "Height": 300
+  },
+  "Items": [
+    {
+      "$type": "text",
+      "Text": "\u5217\u5370\u65E5\u671F\uFF1A{{DATE}}",
+      "FontFamily": "Segoe UI",
+      "FontSize": 14,
+      "FontStyle": 0,
+      "Color": "#FF000000",
+      "Alignment": 16,
+      "Id": "3a3b5161-3934-45c0-ac96-5de3c8843951",
+      "Name": "Text",
+      "Bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": 440.5512,
+          "Y": 274.2756
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 300,
+          "Height": 60
+        },
+        "X": 440.5512,
+        "Y": 274.2756,
+        "Width": 300,
+        "Height": 60,
+        "Left": 440.5512,
+        "Top": 274.2756,
+        "Right": 740.5512,
+        "Bottom": 334.2756,
+        "IsEmpty": false
+      },
+      "Rotation": 0
+    },
+    {
+      "$type": "image",
+      "ImagePath": "C:\\Users\\dev\\Downloads\\468964662_9581571188525518_6302218974423463155_n.jpg",
+      "MaintainAspect": true,
+      "Id": "f0953bb5-192f-4d6d-87e9-9b1543051749",
+      "Name": "468964662_9581571188525518_6302218974423463155_n.jpg",
+      "Bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": 441.5512,
+          "Y": 161.2756
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 150,
+          "Height": 100
+        },
+        "X": 441.5512,
+        "Y": 161.2756,
+        "Width": 150,
+        "Height": 100,
+        "Left": 441.5512,
+        "Top": 161.2756,
+        "Right": 591.5512,
+        "Bottom": 261.2756,
+        "IsEmpty": false
+      },
+      "Rotation": 0
+    },
+    {
+      "$type": "image",
+      "ImagePath": "C:\\Users\\dev\\Downloads\\468964662_9581571188525518_6302218974423463155_n.jpg",
+      "MaintainAspect": true,
+      "Id": "3250ba54-fb52-4831-9f0a-24d3331349ce",
+      "Name": "468964662_9581571188525518_6302218974423463155_n.jpg",
+      "Bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": 613.5512,
+          "Y": 162.2756
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 150,
+          "Height": 100
+        },
+        "X": 613.5512,
+        "Y": 162.2756,
+        "Width": 150,
+        "Height": 100,
+        "Left": 613.5512,
+        "Top": 162.2756,
+        "Right": 763.5512,
+        "Bottom": 262.2756,
+        "IsEmpty": false
+      },
+      "Rotation": 0
+    },
+    {
+      "$type": "text",
+      "Text": "\u59D3\u540D\uFF1A{{Name}}",
+      "FontFamily": "Segoe UI",
+      "FontSize": 14,
+      "FontStyle": 0,
+      "Color": "#FF000000",
+      "Alignment": 16,
+      "Id": "7df96af6-26ad-4239-8ad9-3d098b42a4d9",
+      "Name": "Text",
+      "Bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": 440.5512,
+          "Y": 341.2756
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 300,
+          "Height": 60
+        },
+        "X": 440.5512,
+        "Y": 341.2756,
+        "Width": 300,
+        "Height": 60,
+        "Left": 440.5512,
+        "Top": 341.2756,
+        "Right": 740.5512,
+        "Bottom": 401.2756,
+        "IsEmpty": false
+      },
+      "Rotation": 0
+    },
+    {
+      "$type": "text",
+      "Text": "\u57CE\u5E02\uFF1A{{City}}",
+      "FontFamily": "Segoe UI",
+      "FontSize": 14,
+      "FontStyle": 0,
+      "Color": "#FF000000",
+      "Alignment": 16,
+      "Id": "a8918e4d-0332-423c-9b01-069f914a013a",
+      "Name": "Text",
+      "Bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": 439.5512,
+          "Y": 409.2756
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 300,
+          "Height": 60
+        },
+        "X": 439.5512,
+        "Y": 409.2756,
+        "Width": 300,
+        "Height": 60,
+        "Left": 439.5512,
+        "Top": 409.2756,
+        "Right": 739.5512,
+        "Bottom": 469.2756,
+        "IsEmpty": false
+      },
+      "Rotation": 0
+    }
+  ],
+  "PagePixelSize": {
+    "IsEmpty": false,
+    "Width": 1181.1024,
+    "Height": 590.5512
+  }
+}

@@ -13,8 +13,7 @@ namespace LabelDesigner.UI
     public class DesignerCanvas : Control
     {
         public event EventHandler? SelectionChanged;
-
-        private LabelDocument _document = LabelDocument.CreateDefault();
+        private LabelDocument _document = LabelDocument.CreateDefault();       
         public LabelDocument Document
         {
             get => _document;
@@ -28,6 +27,7 @@ namespace LabelDesigner.UI
         }
 
         public CanvasItem? SelectedItem { get; private set; }
+        public FieldResolver Resolver => _resolver;
 
         private enum DragMode { None, Move, Resize }
         private DragMode _dragMode = DragMode.None;
@@ -45,12 +45,13 @@ namespace LabelDesigner.UI
 
         // 🔹 內部剪貼簿 (只存 CanvasItem)
         private List<CanvasItem> _clipboard = new();
-
-        private readonly FieldResolver _resolver = new(new()
+        private FieldResolver _resolver = new FieldResolver();
+        // 外部設定資料來源
+        public void SetResolver(FieldResolver resolver)
         {
-            ["Name"] = "測試姓名",
-            ["Code"] = "A001"
-        });
+            _resolver = resolver; //_resolver = resolver ?? new FieldResolver();
+            Invalidate(); // 重畫
+        }
 
         public DesignerCanvas()
         {
@@ -100,7 +101,7 @@ namespace LabelDesigner.UI
             foreach (var item in _document.Items)
             {
                 var stateItem = e.Graphics.Save();
-                item.Draw(e.Graphics, _resolver);
+                item.Draw(e.Graphics, _resolver);   //在 OnPaint 時就會用 _resolver 去解欄位
 
                 // 🔹 每個物件都有灰色虛線框
                 item.DrawOutline(e.Graphics);
