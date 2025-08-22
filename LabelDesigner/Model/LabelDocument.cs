@@ -9,6 +9,7 @@ namespace LabelDesigner.Model
         public float Dpi { get; set; } = 300f;
         public float PageWidthMm { get; set; } = 100f;
         public float PageHeightMm { get; set; } = 50f;
+        public SizeF PageSize { get; set; } = new SizeF(400, 300);
         public List<CanvasItem> Items { get; set; } = new();
 
         public static LabelDocument CreateDefault(float dpi = 300)
@@ -34,6 +35,23 @@ namespace LabelDesigner.Model
             };
 
             return JsonSerializer.Deserialize<LabelDocument>(json, options);
+        }
+        /// <summary>
+        /// 建立整份標籤文件的深複製
+        /// </summary>
+        public LabelDocument Clone()
+        {
+            var clone = new LabelDocument
+            {
+                PageSize = this.PageSize
+            };
+
+            foreach (var item in Items)
+            {
+                clone.Items.Add(item.Clone());  // 呼叫各 Item 自己的 Clone()
+            }
+
+            return clone;
         }
     }
 }

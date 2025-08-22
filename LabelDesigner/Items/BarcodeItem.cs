@@ -50,5 +50,22 @@ namespace LabelDesigner.Items
                 g.DrawString(data, font, brush, rect, sf);
             }
         }
+
+        /// <summary>
+        /// 建立這個物件的深複製
+        /// </summary>
+        public override CanvasItem Clone()
+        {
+            return new BarcodeItem
+            {
+                Id = Guid.NewGuid(),   // ⚡ 新的 Guid，避免跟原本重複
+                Name = this.Name,
+                Bounds = this.Bounds,
+                Rotation = this.Rotation,
+                Symbology = this.Symbology,
+                Value = this.Value,
+                ShowText = this.ShowText
+            };
+        }
     }
 }

@@ -18,7 +18,13 @@ namespace LabelDesigner.UI
         public LabelDocument Document
         {
             get => _document;
-            set { _document = value; Invalidate(); }
+            set
+            {
+                _document = value;
+                _history.Clear();
+                _history.PushState(_document);
+                Invalidate();
+            }
         }
 
         public CanvasItem? SelectedItem { get; private set; }
@@ -34,7 +40,13 @@ namespace LabelDesigner.UI
         private List<(PointF start, PointF end)> _snapLines = new();
         private const float _snapThreshold = 5f;
 
-        private readonly FieldResolver _resolver = new FieldResolver(new()
+        // 🔹 Undo/Redo 管理器
+        private readonly UndoRedoManager<LabelDocument> _history;
+
+        // 🔹 內部剪貼簿 (只存 CanvasItem)
+        private List<CanvasItem> _clipboard = new();
+
+        private readonly FieldResolver _resolver = new(new()
         {
             ["Name"] = "測試姓名",
             ["Code"] = "A001"
@@ -45,13 +57,24 @@ namespace LabelDesigner.UI
             this.DoubleBuffered = true;
             this.BackColor = Color.WhiteSmoke;
             this.SetStyle(ControlStyles.Selectable, true);
+
+            // 初始化 Undo/Redo
+            _history = new UndoRedoManager<LabelDocument>(doc => doc.Clone());
+            _history.PushState(_document); // 初始狀態
         }
 
         public void AddItem(CanvasItem item)
         {
             _document.Items.Add(item);
             SelectItem(item);
+            PushHistory();
             Invalidate();
+        }
+
+        private void PushHistory()
+        {
+            if (_document != null)
+                _history.PushState(_document);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -170,27 +193,23 @@ namespace LabelDesigner.UI
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (SelectedItem == null) return;
-
             var p = ClientToPage(e.Location);
 
+            // 🔹 如果正在拖曳或縮放
             if (_dragMode == DragMode.Move)
             {
                 var dx = p.X - _dragStart.X;
                 var dy = p.Y - _dragStart.Y;
 
-                var newBounds = new RectangleF(
+                SelectedItem!.Bounds = new RectangleF(
                     _originalBounds.X + dx,
                     _originalBounds.Y + dy,
                     _originalBounds.Width,
                     _originalBounds.Height);
 
-                SelectedItem.Bounds = newBounds;
-
-                // 🔹 計算對齊輔助線
                 _snapLines = FindSnapLines(SelectedItem);
-
                 Invalidate();
+                return;
             }
             else if (_dragMode == DragMode.Resize)
             {
@@ -200,24 +219,58 @@ namespace LabelDesigner.UI
 
                 switch (_resizeHandleIndex)
                 {
-                    case 0: SelectedItem.Bounds = new RectangleF(b.X + dx, b.Y + dy, b.Width - dx, b.Height - dy); break;
-                    case 1: SelectedItem.Bounds = new RectangleF(b.X, b.Y + dy, b.Width, b.Height - dy); break;
-                    case 2: SelectedItem.Bounds = new RectangleF(b.X, b.Y + dy, b.Width + dx, b.Height - dy); break;
-                    case 3: SelectedItem.Bounds = new RectangleF(b.X, b.Y, b.Width + dx, b.Height); break;
-                    case 4: SelectedItem.Bounds = new RectangleF(b.X, b.Y, b.Width + dx, b.Height + dy); break;
-                    case 5: SelectedItem.Bounds = new RectangleF(b.X, b.Y, b.Width, b.Height + dy); break;
-                    case 6: SelectedItem.Bounds = new RectangleF(b.X + dx, b.Y, b.Width - dx, b.Height + dy); break;
-                    case 7: SelectedItem.Bounds = new RectangleF(b.X + dx, b.Y, b.Width - dx, b.Height); break;
+                    case 0: SelectedItem!.Bounds = new RectangleF(b.X + dx, b.Y + dy, b.Width - dx, b.Height - dy); break; // 左上
+                    case 1: SelectedItem!.Bounds = new RectangleF(b.X, b.Y + dy, b.Width, b.Height - dy); break; // 上中
+                    case 2: SelectedItem!.Bounds = new RectangleF(b.X, b.Y + dy, b.Width + dx, b.Height - dy); break; // 右上
+                    case 3: SelectedItem!.Bounds = new RectangleF(b.X, b.Y, b.Width + dx, b.Height); break; // 右中
+                    case 4: SelectedItem!.Bounds = new RectangleF(b.X, b.Y, b.Width + dx, b.Height + dy); break; // 右下
+                    case 5: SelectedItem!.Bounds = new RectangleF(b.X, b.Y, b.Width, b.Height + dy); break; // 下中
+                    case 6: SelectedItem!.Bounds = new RectangleF(b.X + dx, b.Y, b.Width - dx, b.Height + dy); break; // 左下
+                    case 7: SelectedItem!.Bounds = new RectangleF(b.X + dx, b.Y, b.Width - dx, b.Height); break; // 左中
                 }
 
-                _snapLines = FindSnapLines(SelectedItem);  // 🔹 resize 時也支援
+                _snapLines = FindSnapLines(SelectedItem!);
                 Invalidate();
+                return;
+            }
+
+            // 🔹 如果沒有拖曳，檢查滑鼠游標該顯示什麼
+            if (SelectedItem != null)
+            {
+                var handles = SelectedItem.GetResizeHandles();
+                Cursor = Cursors.Default;
+
+                for (int i = 0; i < handles.Count; i++)
+                {
+                    if (handles[i].Contains(p))
+                    {
+                        Cursor = i switch
+                        {
+                            0 => Cursors.SizeNWSE, // 左上
+                            1 => Cursors.SizeNS,   // 上中
+                            2 => Cursors.SizeNESW, // 右上
+                            3 => Cursors.SizeWE,   // 右中
+                            4 => Cursors.SizeNWSE, // 右下
+                            5 => Cursors.SizeNS,   // 下中
+                            6 => Cursors.SizeNESW, // 左下
+                            7 => Cursors.SizeWE,   // 左中
+                            _ => Cursors.Default
+                        };
+                        break;
+                    }
+                }
             }
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
+
+            if (_dragMode == DragMode.Move || _dragMode == DragMode.Resize)
+            {
+                PushHistory(); // 🔹 記錄一次狀態
+            }
+
             _dragMode = DragMode.None;
             _resizeHandleIndex = -1;
 
@@ -227,6 +280,34 @@ namespace LabelDesigner.UI
         }
 
         protected override bool IsInputKey(Keys keyData) => true;
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            if (e.Control && e.KeyCode == Keys.Z)
+            {
+                var prev = _history.Undo(_document);
+                if (prev != null) { _document = prev; Invalidate(); }
+            }
+            else if (e.Control && e.KeyCode == Keys.Y)
+            {
+                var next = _history.Redo(_document);
+                if (next != null) { _document = next; Invalidate(); }
+            }
+            else if (e.KeyCode == Keys.Delete && SelectedItem != null)
+            {
+                DeleteSelection();
+            }
+            else if (e.Control && e.KeyCode == Keys.C)
+            {
+                CopySelection();
+            }
+            else if (e.Control && e.KeyCode == Keys.V)
+            {
+                PasteSelection();
+            }
+        }
 
         protected override void OnDoubleClick(EventArgs e)
         {
@@ -239,6 +320,7 @@ namespace LabelDesigner.UI
                 if (!string.IsNullOrEmpty(input))
                 {
                     txt.Text = input;
+                    PushHistory();
                     Invalidate();
                 }
             }
@@ -311,6 +393,48 @@ namespace LabelDesigner.UI
             }
 
             return lines;
+        }
+
+        // =============================
+        // 🔹 Copy / Paste / Delete
+        // =============================
+        private void CopySelection()
+        {
+            _clipboard.Clear();
+            if (SelectedItem != null)
+            {
+                _clipboard.Add(SelectedItem.Clone());
+            }
+        }
+
+        private void PasteSelection()
+        {
+            if (_clipboard.Count > 0)
+            {
+                var clone = _clipboard[0].Clone();
+                // 🔹 貼上的時候往右下偏移一點
+                clone.Bounds = new RectangleF(
+                    clone.Bounds.X + 10,
+                    clone.Bounds.Y + 10,
+                    clone.Bounds.Width,
+                    clone.Bounds.Height);
+
+                _document.Items.Add(clone);
+                SelectItem(clone);
+                PushHistory();
+                Invalidate();
+            }
+        }
+
+        private void DeleteSelection()
+        {
+            if (SelectedItem != null)
+            {
+                _document.Items.Remove(SelectedItem);
+                SelectItem(null);
+                PushHistory();
+                Invalidate();
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Text.Json.Serialization;
 using LabelDesigner.Services;
@@ -35,6 +35,26 @@ namespace LabelDesigner.Items
 
             string resolved = resolver.Resolve(Text);
             g.DrawString(resolved, font, brush, rect, sf);
+        }
+
+        /// <summary>
+        /// 建立這個物件的深複製
+        /// </summary>
+        public override CanvasItem Clone()
+        {
+            return new TextItem
+            {
+                Id = Guid.NewGuid(), // ⚡ 新的 Guid，避免跟原始物件衝突
+                Name = this.Name,
+                Bounds = this.Bounds,
+                Rotation = this.Rotation,
+                Text = this.Text,
+                FontFamily = this.FontFamily,
+                FontSize = this.FontSize,
+                FontStyle = this.FontStyle,
+                Color = this.Color,
+                Alignment = this.Alignment
+            };
         }
     }
 }

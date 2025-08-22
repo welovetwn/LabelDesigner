@@ -24,7 +24,12 @@ namespace LabelDesigner.Items
         public abstract void Draw(Graphics g, FieldResolver resolver);
 
         /// <summary>
-        /// 畫出物件的基本「設計框線」（灰色虛線，未選取時用）
+        /// 每個子類別都要實作「深複製」
+        /// </summary>
+        public abstract CanvasItem Clone();
+
+        /// <summary>
+        /// 灰色虛線框 (所有物件都會有)
         /// </summary>
         public virtual void DrawOutline(Graphics g)
         {
@@ -33,49 +38,42 @@ namespace LabelDesigner.Items
         }
 
         /// <summary>
-        /// 當物件被選取時，畫出「紅色點狀框」
+        /// 當物件被選取時，畫紅色虛線框 + 8 個控制點
         /// </summary>
         public virtual void DrawSelection(Graphics g)
         {
             using var pen = new Pen(Color.DarkRed, 1) { DashStyle = DashStyle.Dot };
             g.DrawRectangle(pen, Bounds.X, Bounds.Y, Bounds.Width, Bounds.Height);
 
-            // 畫 8 個 resize handles
+            // 畫控制點
             foreach (var handle in GetResizeHandles())
             {
-                using var brush = new SolidBrush(Color.White);
-                g.FillRectangle(brush, handle);
-                g.DrawRectangle(Pens.DarkRed, handle.X, handle.Y, handle.Width, handle.Height);
+                g.FillRectangle(Brushes.White, handle);
+                g.DrawRectangle(Pens.Black, handle.X, handle.Y, handle.Width, handle.Height);
             }
         }
 
-        public virtual bool HitTest(PointF p) => Bounds.Contains(p);
-
         /// <summary>
-        /// 取得 8 個 resize 控制點
+        /// 取得 8 個縮放控制點 (四角 + 四邊中點)
         /// </summary>
-        public virtual List<RectangleF> GetResizeHandles(float handleSize = 6f)
+        public virtual List<RectangleF> GetResizeHandles(float size = 10f)
         {
-            var handles = new List<RectangleF>();
+            var list = new List<RectangleF>();
+            float half = size / 2f;
 
-            float x = Bounds.X;
-            float y = Bounds.Y;
-            float w = Bounds.Width;
-            float h = Bounds.Height;
+            // 四角 + 四邊
+            list.Add(new RectangleF(Bounds.Left - half, Bounds.Top - half, size, size)); // 左上
+            list.Add(new RectangleF(Bounds.Left + Bounds.Width / 2 - half, Bounds.Top - half, size, size)); // 上中
+            list.Add(new RectangleF(Bounds.Right - half, Bounds.Top - half, size, size)); // 右上
+            list.Add(new RectangleF(Bounds.Right - half, Bounds.Top + Bounds.Height / 2 - half, size, size)); // 右中
+            list.Add(new RectangleF(Bounds.Right - half, Bounds.Bottom - half, size, size)); // 右下
+            list.Add(new RectangleF(Bounds.Left + Bounds.Width / 2 - half, Bounds.Bottom - half, size, size)); // 下中
+            list.Add(new RectangleF(Bounds.Left - half, Bounds.Bottom - half, size, size)); // 左下
+            list.Add(new RectangleF(Bounds.Left - half, Bounds.Top + Bounds.Height / 2 - half, size, size)); // 左中
 
-            float hs = handleSize;
-
-            // 八個控制點 (左上、上中、右上、右中、右下、下中、左下、左中)
-            handles.Add(new RectangleF(x - hs / 2, y - hs / 2, hs, hs));             // 左上
-            handles.Add(new RectangleF(x + w / 2 - hs / 2, y - hs / 2, hs, hs));     // 上中
-            handles.Add(new RectangleF(x + w - hs / 2, y - hs / 2, hs, hs));         // 右上
-            handles.Add(new RectangleF(x + w - hs / 2, y + h / 2 - hs / 2, hs, hs)); // 右中
-            handles.Add(new RectangleF(x + w - hs / 2, y + h - hs / 2, hs, hs));     // 右下
-            handles.Add(new RectangleF(x + w / 2 - hs / 2, y + h - hs / 2, hs, hs)); // 下中
-            handles.Add(new RectangleF(x - hs / 2, y + h - hs / 2, hs, hs));         // 左下
-            handles.Add(new RectangleF(x - hs / 2, y + h / 2 - hs / 2, hs, hs));     // 左中
-
-            return handles;
+            return list;
         }
+
+        public virtual bool HitTest(PointF p) => Bounds.Contains(p);
     }
 }

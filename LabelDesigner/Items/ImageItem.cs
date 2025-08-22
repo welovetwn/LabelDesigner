@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.IO;
 using LabelDesigner.Services;
@@ -43,6 +43,23 @@ namespace LabelDesigner.Items
             }
 
             g.DrawImage(img, dest);
+        }
+
+        /// <summary>
+        /// 建立這個物件的深複製
+        /// </summary>
+        public override CanvasItem Clone()
+        {
+            return new ImageItem
+            {
+                Id = Guid.NewGuid(),   // ⚡ 新的 Guid
+                Name = this.Name,
+                Bounds = this.Bounds,
+                Rotation = this.Rotation,
+                ImagePath = this.ImagePath,
+                MaintainAspect = this.MaintainAspect
+                // _cache 不複製，因為貼上後會自動重新載入
+            };
         }
     }
 }
