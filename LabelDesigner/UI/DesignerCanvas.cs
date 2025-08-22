@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -71,7 +70,14 @@ namespace LabelDesigner.UI
             {
                 var stateItem = e.Graphics.Save();
                 item.Draw(e.Graphics, _resolver);
-                if (item == SelectedItem) item.DrawSelection(e.Graphics);
+
+                // 🔹 每個物件都有虛線框
+                item.DrawOutline(e.Graphics);
+
+                // 🔹 被選取的再畫藍色點狀框
+                if (item == SelectedItem)
+                    item.DrawSelection(e.Graphics);
+
                 e.Graphics.Restore(stateItem);
             }
 
@@ -94,13 +100,25 @@ namespace LabelDesigner.UI
                 g.DrawLine(pen, page.Left, y, page.Right, y);
         }
 
+        // ✅ Client <-> Page 轉換
+        private PointF ClientToPage(PointF clientPt)
+        {
+            var page = GetCenteredPageRect(_document.PagePixelSize);
+            return new PointF(clientPt.X - page.X, clientPt.Y - page.Y);
+        }
+
+        private PointF PageToClient(PointF pagePt)
+        {
+            var page = GetCenteredPageRect(_document.PagePixelSize);
+            return new PointF(page.X + pagePt.X, page.Y + pagePt.Y);
+        }
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
             this.Focus();
 
-            var page = GetCenteredPageRect(_document.PagePixelSize);
-            var p = new PointF(e.X - page.X, e.Y - page.Y);
+            var p = ClientToPage(e.Location);
 
             SelectedItem = _document.Items.LastOrDefault(it => it.HitTest(p));
             SelectionChanged?.Invoke(this, EventArgs.Empty);
@@ -118,11 +136,14 @@ namespace LabelDesigner.UI
             base.OnMouseMove(e);
             if (_dragging && SelectedItem != null)
             {
-                var page = GetCenteredPageRect(_document.PagePixelSize);
-                var p = new PointF(e.X - page.X, e.Y - page.Y);
+                var p = ClientToPage(e.Location);
                 var dx = p.X - _dragStart.X;
                 var dy = p.Y - _dragStart.Y;
-                SelectedItem.Bounds = new RectangleF(_originalBounds.X + dx, _originalBounds.Y + dy, _originalBounds.Width, _originalBounds.Height);
+                SelectedItem.Bounds = new RectangleF(
+                    _originalBounds.X + dx,
+                    _originalBounds.Y + dy,
+                    _originalBounds.Width,
+                    _originalBounds.Height);
                 Invalidate();
             }
         }
@@ -140,8 +161,14 @@ namespace LabelDesigner.UI
             base.OnDoubleClick(e);
             if (SelectedItem is TextItem txt)
             {
-                var input = Microsoft.VisualBasic.Interaction.InputBox("編輯文字 (支援 {{FIELD:Name}}、{{DATE}})", "文字編輯", txt.Text);
-                if (!string.IsNullOrEmpty(input)) { txt.Text = input; Invalidate(); }
+                var input = Microsoft.VisualBasic.Interaction.InputBox(
+                    "編輯文字 (支援 {{FIELD:Name}}、{{DATE}})",
+                    "文字編輯", txt.Text);
+                if (!string.IsNullOrEmpty(input))
+                {
+                    txt.Text = input;
+                    Invalidate();
+                }
             }
         }
 
@@ -149,6 +176,14 @@ namespace LabelDesigner.UI
         {
             SelectedItem = item;
             SelectionChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public RectangleF GetCenteredBounds(SizeF itemSize)
+        {
+            var page = GetCenteredPageRect(Document.PagePixelSize);
+            float x = (page.Width - itemSize.Width) / 2f;
+            float y = (page.Height - itemSize.Height) / 2f;
+            return new RectangleF(x, y, itemSize.Width, itemSize.Height);
         }
     }
 }

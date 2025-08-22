@@ -1,6 +1,6 @@
 using System;
 using System.Drawing;
-using System.Text.RegularExpressions;
+using System.Text.Json.Serialization;
 using LabelDesigner.Services;
 
 namespace LabelDesigner.Items
@@ -10,8 +10,11 @@ namespace LabelDesigner.Items
         public string Text { get; set; } = "Text";
         public string FontFamily { get; set; } = "Segoe UI";
         public float FontSize { get; set; } = 12f;
-        public System.Drawing.FontStyle FontStyle { get; set; } = System.Drawing.FontStyle.Regular;
-        public System.Drawing.Color Color { get; set; } = System.Drawing.Color.Black;
+        public FontStyle FontStyle { get; set; } = FontStyle.Regular;
+
+        [JsonConverter(typeof(ColorJsonConverter))]
+        public Color Color { get; set; } = Color.Black;
+
         public ContentAlignment Alignment { get; set; } = ContentAlignment.MiddleLeft;
 
         public override void Draw(Graphics g, FieldResolver resolver)
@@ -19,13 +22,15 @@ namespace LabelDesigner.Items
             using var font = new Font(FontFamily, FontSize, FontStyle);
             using var brush = new SolidBrush(Color);
             var rect = Bounds;
-            var sf = new StringFormat();
-            sf.LineAlignment = StringAlignment.Center;
-            sf.Alignment = Alignment switch
+            var sf = new StringFormat
             {
-                ContentAlignment.MiddleLeft or ContentAlignment.TopLeft or ContentAlignment.BottomLeft => StringAlignment.Near,
-                ContentAlignment.MiddleCenter or ContentAlignment.TopCenter or ContentAlignment.BottomCenter => StringAlignment.Center,
-                _ => StringAlignment.Far
+                LineAlignment = StringAlignment.Center,
+                Alignment = Alignment switch
+                {
+                    ContentAlignment.MiddleLeft or ContentAlignment.TopLeft or ContentAlignment.BottomLeft => StringAlignment.Near,
+                    ContentAlignment.MiddleCenter or ContentAlignment.TopCenter or ContentAlignment.BottomCenter => StringAlignment.Center,
+                    _ => StringAlignment.Far
+                }
             };
 
             string resolved = resolver.Resolve(Text);

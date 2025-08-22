@@ -26,11 +26,12 @@ namespace LabelDesigner
 
         private void btnAddText_Click(object sender, EventArgs e)
         {
+            var itemSize = new SizeF(300, 60); // 預設大小
             var item = new Items.TextItem
             {
                 Name = "Text",
                 Text = "雙擊編輯文字，支援變數：{{DATE}}、{{FIELD:Name}}",
-                Bounds = new RectangleF(20, 20, 300, 60),
+                Bounds = canvas.GetCenteredBounds(itemSize),
                 FontFamily = "Segoe UI",
                 FontSize = 14,
                 Color = Color.Black
@@ -44,11 +45,12 @@ namespace LabelDesigner
             ofd.Filter = "Image Files|*.png;*.jpg;*.jpeg;*.bmp";
             if (ofd.ShowDialog(this) == DialogResult.OK)
             {
+                var itemSize = new SizeF(150, 100); // 預設大小
                 var item = new Items.ImageItem
                 {
                     Name = Path.GetFileName(ofd.FileName),
                     ImagePath = ofd.FileName,
-                    Bounds = new RectangleF(50, 100, 150, 100),
+                    Bounds = canvas.GetCenteredBounds(itemSize),
                     MaintainAspect = true
                 };
                 canvas.AddItem(item);
@@ -57,16 +59,18 @@ namespace LabelDesigner
 
         private void btnAddBarcode_Click(object sender, EventArgs e)
         {
+            var itemSize = new SizeF(250, 80); // 預設大小
             var item = new Items.BarcodeItem
             {
                 Name = "Barcode",
                 Value = "123456789012",
                 Symbology = "Code128",
                 ShowText = true,
-                Bounds = new RectangleF(50, 220, 250, 80)
+                Bounds = canvas.GetCenteredBounds(itemSize)
             };
             canvas.AddItem(item);
         }
+
 
         private void btnOpen_Click(object sender, EventArgs e)
         {

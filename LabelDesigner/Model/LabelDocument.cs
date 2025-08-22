@@ -1,7 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Drawing;
 using LabelDesigner.Items;
+using LabelDesigner.Services;
+using System.Text.Json;
 
 namespace LabelDesigner.Model
 {
@@ -25,6 +24,16 @@ namespace LabelDesigner.Model
                 float inchH = PageHeightMm / 25.4f;
                 return new SizeF(inchW * Dpi, inchH * Dpi);
             }
+        }
+
+        public static LabelDocument FromJson(string json)
+        {
+            var options = new JsonSerializerOptions
+            {
+                Converters = { new ColorJsonConverter() }
+            };
+
+            return JsonSerializer.Deserialize<LabelDocument>(json, options);
         }
     }
 }
