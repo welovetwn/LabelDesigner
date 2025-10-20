@@ -40,23 +40,41 @@ namespace LabelDesigner
             canvas.AddItem(item);
         }
 
+        // 檔案路徑：MainForm.cs
+
+        // 檔案路徑：MainForm.cs（片段）
+
         private void btnAddImage_Click(object sender, EventArgs e)
         {
             using var ofd = new OpenFileDialog();
             ofd.Filter = "Image Files|*.png;*.jpg;*.jpeg;*.bmp";
+
             if (ofd.ShowDialog(this) == DialogResult.OK)
             {
-                var itemSize = new SizeF(150, 100); // 預設大小
+                var itemSize = new SizeF(150, 100);
+
                 var item = new Items.ImageItem
                 {
-                    Name = Path.GetFileName(ofd.FileName),
-                    ImagePath = ofd.FileName,
+                    Name = Path.GetFileNameWithoutExtension(ofd.FileName), // 改用名稱，不儲存路徑
                     Bounds = canvas.GetCenteredBounds(itemSize),
                     MaintainAspect = true
                 };
+
+                try
+                {
+                    item.LoadImageAndConvertToBase64(ofd.FileName);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, $"圖片讀取失敗：{ex.Message}", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 canvas.AddItem(item);
             }
         }
+
+
 
         private void btnAddBarcode_Click(object sender, EventArgs e)
         {
@@ -76,7 +94,7 @@ namespace LabelDesigner
         private void btnOpen_Click(object sender, EventArgs e)
         {
             using var ofd = new OpenFileDialog();
-            ofd.Filter = "Label JSON|*.label.json;*.json";
+            ofd.Filter = "Label JSON|*.label;*.json";
             if (ofd.ShowDialog(this) == DialogResult.OK)
             {
                 try
@@ -95,8 +113,8 @@ namespace LabelDesigner
         private void btnSave_Click(object sender, EventArgs e)
         {
             using var sfd = new SaveFileDialog();
-            sfd.Filter = "Label JSON|*.label.json";
-            sfd.FileName = "MyLabel.label.json";
+            sfd.Filter = "Label JSON|*.label";
+            sfd.FileName = "MyLabel.label";
             if (sfd.ShowDialog(this) == DialogResult.OK)
             {
                 try
@@ -147,5 +165,44 @@ namespace LabelDesigner
             else
                 propertyGrid1.SelectedObject = canvas.Document;
         }
+        // /MainForm.cs
+        private async void btnPrintFromApi_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // 1. 建立 API 提供者
+                var provider = new ApiDataProvider();
+
+                // 2. 設定 API URL 與方法（請改成你的 API）
+                string apiUrl = "http://localhost:5210/api/labels"; // 改成你本機 API URL
+                string httpMethod = "GET"; // 或 "POST"
+                string? payload = null;    // 如果是 POST，放 JSON 字串
+
+                // 3. 呼叫 API 並解析為欄位字典
+                var fields = await provider.FetchAsync(apiUrl, httpMethod, payload);
+
+                // 4. 錯誤檢查
+                if (fields.ContainsKey("error"))
+                {
+                    MessageBox.Show("API 錯誤：" + fields["error"]);
+                    return;
+                }
+
+                // 5. 直接用新的欄位字典建立 FieldResolver
+                _resolver = new FieldResolver(fields);
+
+                // 6. 套用欄位資料到 Canvas
+                canvas.SetResolver(_resolver);
+
+                // 7. 執行列印
+                _printer.PrintDocument(canvas.Document, this, _resolver);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, "列印失敗: " + ex.Message);
+            }
+        }
+
+
     }
 }

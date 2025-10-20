@@ -1,9 +1,9 @@
-﻿using System;
+﻿// /Services/PrintService.cs
+using System;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
 using LabelDesigner.Model;
-using LabelDesigner.Services;
 
 namespace LabelDesigner.Services
 {
@@ -12,10 +12,9 @@ namespace LabelDesigner.Services
         public void PrintDocument(LabelDocument doc, IWin32Window owner, FieldResolver resolver)
         {
             using var pd = new PrintDocument();
-            pd.DefaultPageSettings.Margins = new Margins(0,0,0,0);
+            pd.DefaultPageSettings.Margins = new Margins(0, 0, 0, 0);
             pd.PrintPage += (s, e) =>
             {
-                // fit label page to printable area
                 var pagePx = doc.PagePixelSize;
                 float scaleX = e.MarginBounds.Width / pagePx.Width;
                 float scaleY = e.MarginBounds.Height / pagePx.Height;
@@ -25,9 +24,9 @@ namespace LabelDesigner.Services
                 g.TranslateTransform(e.MarginBounds.Left, e.MarginBounds.Top);
                 g.ScaleTransform(scale, scale);
 
-                var resolver = new FieldResolver(); // default empty
+                // ✅ 使用傳進來的 resolver，不要 new
                 foreach (var item in doc.Items)
-                    item.Draw(g, resolver); // ✅ 使用傳進來的 resolver
+                    item.Draw(g, resolver);
             };
 
             using var dlg = new PrintDialog { UseEXDialog = true, Document = pd };

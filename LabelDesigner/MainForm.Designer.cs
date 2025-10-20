@@ -1,3 +1,4 @@
+// /MainForm.Designer.cs
 namespace LabelDesigner
 {
     partial class MainForm
@@ -21,10 +22,11 @@ namespace LabelDesigner
             btnOpen = new ToolStripButton();
             btnSave = new ToolStripButton();
             btnPrint = new ToolStripButton();
-            splitContainer1 = new SplitContainer();
-            canvas = new LabelDesigner.UI.DesignerCanvas();
-            propertyGrid1 = new PropertyGrid();
+            btnPrintFromApi = new ToolStripButton(); // ✅ 新增
             btnApiTest = new ToolStripButton();
+            splitContainer1 = new SplitContainer();
+            canvas = new UI.DesignerCanvas();
+            propertyGrid1 = new PropertyGrid();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -35,7 +37,13 @@ namespace LabelDesigner
             // toolStrip1
             // 
             toolStrip1.ImageScalingSize = new Size(20, 20);
-            toolStrip1.Items.AddRange(new ToolStripItem[] { btnAddText, btnAddImage, btnAddBarcode, toolStripSeparator1, btnOpen, btnSave, btnPrint, btnApiTest });
+            toolStrip1.Items.AddRange(new ToolStripItem[] {
+                btnAddText, btnAddImage, btnAddBarcode,
+                toolStripSeparator1,
+                btnOpen, btnSave, btnPrint,
+                btnPrintFromApi, // ✅ 新增按鈕
+                btnApiTest
+            });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(1050, 27);
@@ -95,6 +103,22 @@ namespace LabelDesigner
             btnPrint.Text = "列印";
             btnPrint.Click += btnPrint_Click;
             // 
+            // ✅ btnPrintFromApi
+            // 
+            btnPrintFromApi.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            btnPrintFromApi.Name = "btnPrintFromApi";
+            btnPrintFromApi.Size = new Size(84, 24);
+            btnPrintFromApi.Text = "列印（API）";
+            btnPrintFromApi.Click += btnPrintFromApi_Click;
+            // 
+            // btnApiTest
+            // 
+            btnApiTest.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            btnApiTest.Name = "btnApiTest";
+            btnApiTest.Size = new Size(24, 24);
+            btnApiTest.Text = "資料";
+            btnApiTest.Click += btnApiTest_Click;
+            // 
             // splitContainer1
             // 
             splitContainer1.Dock = DockStyle.Fill;
@@ -138,14 +162,6 @@ namespace LabelDesigner
             propertyGrid1.Size = new Size(259, 573);
             propertyGrid1.TabIndex = 0;
             // 
-            // btnApiTest
-            // 
-            btnApiTest.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            btnApiTest.Name = "btnApiTest";
-            btnApiTest.Size = new Size(24, 24);
-            btnApiTest.Text = "資料";
-            btnApiTest.Click += btnApiTest_Click;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -173,8 +189,9 @@ namespace LabelDesigner
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton btnOpen;
         private System.Windows.Forms.ToolStripButton btnSave;
-        private System.Windows.Forms.ToolStripButton btnApiTest;
         private System.Windows.Forms.ToolStripButton btnPrint;
+        private System.Windows.Forms.ToolStripButton btnPrintFromApi; // ✅ 新增
+        private System.Windows.Forms.ToolStripButton btnApiTest;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private UI.DesignerCanvas canvas;
         private System.Windows.Forms.PropertyGrid propertyGrid1;
