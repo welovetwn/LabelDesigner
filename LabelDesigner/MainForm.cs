@@ -21,10 +21,11 @@ namespace LabelDesigner
             InitializeComponent();
 
             // default doc (100x50 mm converted to pixels at 300 dpi)
-            var doc = LabelDocument.CreateDefault(dpi:300);
+            var doc = LabelDocument.CreateDefault(dpi: 300);
             canvas.Document = doc;
         }
-
+        
+        // ✅ 新增文字
         private void btnAddText_Click(object sender, EventArgs e)
         {
             var itemSize = new SizeF(300, 60); // 預設大小
@@ -40,10 +41,7 @@ namespace LabelDesigner
             canvas.AddItem(item);
         }
 
-        // 檔案路徑：MainForm.cs
-
-        // 檔案路徑：MainForm.cs（片段）
-
+        // ✅ 新增圖片
         private void btnAddImage_Click(object sender, EventArgs e)
         {
             using var ofd = new OpenFileDialog();
@@ -74,8 +72,7 @@ namespace LabelDesigner
             }
         }
 
-
-
+        // ✅ 新增條碼
         private void btnAddBarcode_Click(object sender, EventArgs e)
         {
             var itemSize = new SizeF(250, 80); // 預設大小
@@ -90,6 +87,52 @@ namespace LabelDesigner
             canvas.AddItem(item);
         }
 
+        // ✅ 新增矩形
+        private void btnAddRectangle_Click(object sender, EventArgs e)
+        {
+            var itemSize = new SizeF(200, 150);
+            var item = new Items.RectangleItem
+            {
+                Name = "Rectangle",
+                Bounds = canvas.GetCenteredBounds(itemSize),
+                BorderColor = Color.Black,
+                FillColor = Color.LightBlue,
+                LineWidth = 2f,
+                IsFilled = true
+            };
+            canvas.AddItem(item);
+        }
+
+        // ✅ 新增直線
+        private void btnAddLine_Click(object sender, EventArgs e)
+        {
+            var itemSize = new SizeF(250, 80);
+            var item = new Items.LineItem
+            {
+                Name = "Line",
+                Bounds = canvas.GetCenteredBounds(itemSize),
+                LineColor = Color.Black,
+                LineWidth = 3f,
+                DashStyle = System.Drawing.Drawing2D.DashStyle.Solid
+            };
+            canvas.AddItem(item);
+        }
+
+        // ✅ 新增圓形
+        private void btnAddCircle_Click(object sender, EventArgs e)
+        {
+            var itemSize = new SizeF(180, 180);
+            var item = new Items.CircleItem
+            {
+                Name = "Circle",
+                Bounds = canvas.GetCenteredBounds(itemSize),
+                BorderColor = Color.DarkRed,
+                FillColor = Color.Yellow,
+                LineWidth = 2f,
+                IsFilled = true
+            };
+            canvas.AddItem(item);
+        }
 
         private void btnOpen_Click(object sender, EventArgs e)
         {

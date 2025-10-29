@@ -11,6 +11,9 @@ namespace LabelDesigner.Items
     [JsonDerivedType(typeof(TextItem), typeDiscriminator: "text")]
     [JsonDerivedType(typeof(ImageItem), typeDiscriminator: "image")]
     [JsonDerivedType(typeof(BarcodeItem), typeDiscriminator: "barcode")]
+    [JsonDerivedType(typeof(RectangleItem), typeDiscriminator: "rectangle")]
+    [JsonDerivedType(typeof(LineItem), typeDiscriminator: "line")]
+    [JsonDerivedType(typeof(CircleItem), typeDiscriminator: "circle")]    
     public abstract class CanvasItem
     {
         public Guid Id { get; set; } = Guid.NewGuid();

@@ -18,6 +18,9 @@ namespace LabelDesigner
             btnAddText = new ToolStripButton();
             btnAddImage = new ToolStripButton();
             btnAddBarcode = new ToolStripButton();
+            btnAddRectangle = new ToolStripButton();
+            btnAddLine = new ToolStripButton();
+            btnAddCircle = new ToolStripButton();            
             toolStripSeparator1 = new ToolStripSeparator();
             btnOpen = new ToolStripButton();
             btnSave = new ToolStripButton();
@@ -39,6 +42,9 @@ namespace LabelDesigner
             toolStrip1.ImageScalingSize = new Size(20, 20);
             toolStrip1.Items.AddRange(new ToolStripItem[] {
                 btnAddText, btnAddImage, btnAddBarcode,
+                btnAddRectangle,  // ✅ 新增
+                btnAddLine,       // ✅ 新增
+                btnAddCircle,     // ✅ 新增
                 toolStripSeparator1,
                 btnOpen, btnSave, btnPrint,
                 btnPrintFromApi, // ✅ 新增按鈕
@@ -73,6 +79,27 @@ namespace LabelDesigner
             btnAddBarcode.Size = new Size(59, 24);
             btnAddBarcode.Text = "新增條碼";
             btnAddBarcode.Click += btnAddBarcode_Click;
+            //
+            // 4️⃣ 設定 btnAddRectangle
+            btnAddRectangle.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            btnAddRectangle.Name = "btnAddRectangle";
+            btnAddRectangle.Size = new Size(59, 24);
+            btnAddRectangle.Text = "矩形";
+            btnAddRectangle.Click += btnAddRectangle_Click;
+
+            // 5️⃣ 設定 btnAddLine
+            btnAddLine.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            btnAddLine.Name = "btnAddLine";
+            btnAddLine.Size = new Size(59, 24);
+            btnAddLine.Text = "直線";
+            btnAddLine.Click += btnAddLine_Click;
+
+            // 6️⃣ 設定 btnAddCircle
+            btnAddCircle.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            btnAddCircle.Name = "btnAddCircle";
+            btnAddCircle.Size = new Size(59, 24);
+            btnAddCircle.Text = "圓形";
+            btnAddCircle.Click += btnAddCircle_Click;            
             // 
             // toolStripSeparator1
             // 
@@ -186,6 +213,9 @@ namespace LabelDesigner
         private System.Windows.Forms.ToolStripButton btnAddText;
         private System.Windows.Forms.ToolStripButton btnAddImage;
         private System.Windows.Forms.ToolStripButton btnAddBarcode;
+        private System.Windows.Forms.ToolStripButton btnAddRectangle;
+        private System.Windows.Forms.ToolStripButton btnAddLine;
+        private System.Windows.Forms.ToolStripButton btnAddCircle;        
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton btnOpen;
         private System.Windows.Forms.ToolStripButton btnSave;

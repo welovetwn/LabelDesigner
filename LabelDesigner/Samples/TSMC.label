@@ -194,6 +194,39 @@
         "IsEmpty": false
       },
       "Rotation": 0
+    },
+    {
+      "$type": "rectangle",
+      "BorderColor": "#FF000000",
+      "FillColor": "#00FFFFFF",
+      "LineWidth": 2,
+      "BorderAlpha": 255,
+      "FillAlpha": 0,
+      "IsFilled": false,
+      "Id": "15f2e3f2-d9df-4f07-90b3-687e76e924f4",
+      "Name": "Rectangle",
+      "Bounds": {
+        "Location": {
+          "IsEmpty": false,
+          "X": 400.5512,
+          "Y": 111.275604
+        },
+        "Size": {
+          "IsEmpty": false,
+          "Width": 403,
+          "Height": 395
+        },
+        "X": 400.5512,
+        "Y": 111.275604,
+        "Width": 403,
+        "Height": 395,
+        "Left": 400.5512,
+        "Top": 111.275604,
+        "Right": 803.5512,
+        "Bottom": 506.2756,
+        "IsEmpty": false
+      },
+      "Rotation": 0
     }
   ],
   "PagePixelSize": {
